@@ -1,19 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [minute, setMinute] = useState(0);
-  const [second, setSecond] = useState(50);
-  let secId;
+  const [timerRunning, setTimerRunning] = useState(true);
+  const [count, setCount] = useState(0);
 
-  function startTimer() {
-    secId = setInterval(() => {
-      setSecond((prevSecond) => prevSecond + 1);
-    }, 1000);
+  let minute = Math.floor(count / 60);
+  let seconds = count % 60;
+
+  let timeId;
+
+  function start() {
+    setTimerRunning(true);
+    timeId = setInterval(() => {
+      setCount((prev) => prev + 1);
+    }, 100);
   }
 
-  if (second === 59) {
-    clearInterval(secId);
-    setMinute((prevMinute) => prevMinute + 1);
+  function stop() {
+    setTimerRunning(false);
+    clearInterval(timeId);
   }
 
   return (
@@ -23,14 +28,27 @@ function App() {
         <p>
           Time:{" "}
           <span>
-            <span>{minute}</span> : <span>{second}</span>
+            <span>{minute}</span> : <span>{seconds}</span>
           </span>
         </p>
-        <button type="button" onClick={startTimer}>
-          Start
+        {!timerRunning ? (
+          <button type="button" onClick={start}>
+            Start
+          </button>
+        ) : (
+          <button type="button" onClick={stop}>
+            Stop
+          </button>
+        )}
+
+        <button
+          type="button"
+          onClick={() => {
+            setCount(0);
+          }}
+        >
+          Reset
         </button>
-        <button type="button">Stop</button>
-        <button type="button">Reset</button>
       </div>
     </>
   );
